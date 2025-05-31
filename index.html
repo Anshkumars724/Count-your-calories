@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Count Your Calories</title>
+<title>Count Your Calories - Protein Tracker</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
   * {
@@ -12,63 +12,73 @@
   }
   body {
     margin: 0; padding: 0;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #d1d5db;
     font-family: 'Poppins', sans-serif;
+    background: #121212;
+    color: #e0e0e0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     align-items: center;
+    min-height: 100vh;
   }
   header {
     width: 100%;
     max-width: 500px;
+    background: #1f1f1f;
     padding: 1rem 1.5rem;
+    box-shadow: 0 0 10px #22c55e33;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #111827;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.7);
   }
   header h1 {
+    margin: 0;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+    color: #22c55e;
   }
-  #signInBtn, #signOutBtn {
+  button#signInBtn, button#signOutBtn {
     background: #22c55e;
     border: none;
     padding: 0.4rem 1rem;
-    border-radius: 6px;
-    color: #111827;
+    border-radius: 8px;
     font-weight: 700;
+    color: #121212;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.25s ease;
   }
-  #signInBtn:hover, #signOutBtn:hover {
+  button#signInBtn:hover, button#signOutBtn:hover {
     background: #16a34a;
   }
-  #greetingSection {
-    margin-top: 3rem;
-    text-align: center;
+  main {
     max-width: 500px;
+    width: 100%;
+    padding: 2rem 1rem;
+    flex-grow: 1;
   }
-  #greetingSection h2 {
-    font-weight: 700;
+  #welcomeText {
+    text-align: center;
     font-size: 1.7rem;
+    font-weight: 700;
     margin-bottom: 1rem;
+    color: #22c55e;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
   }
+  @keyframes fadeIn {
+    to {opacity:1;}
+  }
+  /* Circle progress container */
   .circle-wrapper {
     position: relative;
-    width: 140px;
-    height: 140px;
-    margin: 0 auto 1rem;
+    margin: 1rem auto 2rem;
+    width: 140px; height: 140px;
   }
   svg {
     transform: rotate(-90deg);
   }
   circle.bg {
     fill: none;
-    stroke: #334155;
+    stroke: #333;
     stroke-width: 12;
   }
   circle.progress {
@@ -78,34 +88,37 @@
     stroke-linecap: round;
     stroke-dasharray: 440;
     stroke-dashoffset: 440;
-    transition: stroke-dashoffset 1s ease-out;
+    transition: stroke-dashoffset 0.7s ease-out;
   }
-  .calorie-text {
+  .circle-text {
     position: absolute;
+    font-weight: 700;
+    font-size: 1.4rem;
+    width: 140px;
+    text-align: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-weight: 700;
-    font-size: 1.4rem;
     color: #a7f3d0;
   }
+
+  /* Food list */
   #foodList {
-    margin-top: 2rem;
-    width: 100%;
-    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
   .food-item {
-    background: #1e293b;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    background: #1e1e1e;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    cursor: pointer;
+    padding: 1rem;
+    cursor: default;
     transition: background 0.3s ease;
   }
   .food-item:hover {
-    background: #334155;
+    background: #2a2a2a;
   }
   .food-img {
     width: 56px;
@@ -115,15 +128,17 @@
     margin-right: 1rem;
   }
   .food-info {
-    flex: 1;
+    flex-grow: 1;
   }
   .food-name {
     font-weight: 700;
     font-size: 1.1rem;
+    margin: 0 0 0.3rem;
+    color: #22c55e;
   }
   .food-protein {
-    font-size: 0.85rem;
-    color: #94a3b8;
+    font-size: 0.9rem;
+    color: #a0a0a0;
   }
   .food-controls {
     display: flex;
@@ -133,111 +148,94 @@
   .btn {
     background: #22c55e;
     border: none;
-    padding: 0.3rem 0.9rem;
-    border-radius: 6px;
-    color: #111827;
+    border-radius: 8px;
+    color: #121212;
     font-weight: 700;
+    padding: 0.3rem 1rem;
+    font-size: 1.3rem;
     cursor: pointer;
     transition: background 0.3s ease;
     user-select: none;
-    font-size: 1.2rem;
   }
   .btn:hover {
     background: #16a34a;
   }
   .count {
+    min-width: 28px;
+    text-align: center;
     font-weight: 700;
     font-size: 1.2rem;
-    min-width: 24px;
-    text-align: center;
     color: #a7f3d0;
   }
-  /* Donation popup */
-  #donatePopup {
+
+  /* Popup styling */
+  #goalPopup, #donatePopup, #signInModal {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: #111827;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #22c55eaa;
-    padding: 1.5rem 2rem;
-    max-width: 320px;
+    background: #1b1b1b;
+    border-radius: 14px;
+    box-shadow: 0 0 20px #22c55e88;
+    padding: 2rem 2.5rem;
     width: 90%;
-    text-align: center;
+    max-width: 360px;
     color: #a7f3d0;
+    text-align: center;
     transition: transform 0.3s ease;
-    z-index: 9999;
-  }
-  #donatePopup.show {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  #donatePopup h3 {
-    margin-bottom: 1rem;
-  }
-  #donatePopup p {
-    margin-bottom: 1.5rem;
-  }
-  #donatePopup button {
-    background: #22c55e;
-    border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 8px;
-    font-weight: 700;
-    color: #111827;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  #donatePopup button:hover {
-    background: #16a34a;
-  }
-  /* Sign-in simulation */
-  #signInModal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #000000cc;
-    display: none;
-    align-items: center;
-    justify-content: center;
     z-index: 10000;
   }
-  #signInModal.show {
-    display: flex;
+  #goalPopup.show, #donatePopup.show, #signInModal.show {
+    transform: translate(-50%, -50%) scale(1);
   }
-  #signInModal .modal-content {
-    background: #111827;
-    padding: 2rem 3rem;
-    border-radius: 12px;
-    text-align: center;
-    width: 90%;
-    max-width: 350px;
+  #goalPopup h2, #donatePopup h3, #signInModal h2 {
+    margin-top: 0;
+    color: #22c55e;
   }
-  #signInModal input[type="text"] {
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: none;
+  #goalPopup input[type=number], #signInModal input[type=text] {
     width: 100%;
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: none;
+    margin: 1rem 0 1.5rem 0;
+    background: #2a2a2a;
+    color: #d0d0d0;
   }
-  #signInModal button {
+  #goalPopup button, #donatePopup button, #signInModal button {
     background: #22c55e;
     border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 8px;
+    border-radius: 10px;
+    color: #121212;
     font-weight: 700;
-    color: #111827;
+    padding: 0.5rem 1.4rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: background 0.3s ease;
-    width: 100%;
   }
-  #signInModal button:hover {
+  #goalPopup button:hover, #donatePopup button:hover, #signInModal button:hover {
     background: #16a34a;
   }
+
+  /* Overlay for popups */
+  #overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #000000bb;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+  }
+  #overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Footer */
   footer {
-    margin-top: auto;
     padding: 1rem 0;
+    color: #555;
     font-size: 0.9rem;
-    color: #475569;
   }
 </style>
 </head>
@@ -249,48 +247,17 @@
   <button id="signOutBtn" style="display:none;">Sign Out</button>
 </header>
 
-<section id="greetingSection">
-  <h2>Ready to count calories?</h2>
-  <div class="circle-wrapper" aria-label="Calories progress circle">
-    <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">
-      <circle class="bg" cx="70" cy="70" r="70" />
-      <circle class="progress" cx="70" cy="70" r="70" />
+<main>
+  <div id="welcomeText">Ready to count calories?</div>
+
+  <div class="circle-wrapper" aria-label="Protein intake progress">
+    <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true" >
+      <circle class="bg" cx="70" cy="70" r="70"></circle>
+      <circle class="progress" cx="70" cy="70" r="70"></circle>
     </svg>
-    <div class="calorie-text" id="calorieText">0 cal</div>
+    <div class="circle-text" id="proteinText">0 / 0 g</div>
   </div>
-</section>
 
-<section id="foodList" aria-label="Food list">
-  <!-- Food items will be injected here -->
-</section>
-
-<div id="donatePopup" role="dialog" aria-modal="true" aria-labelledby="donateTitle">
-  <h3 id="donateTitle">Support the App 🙏</h3>
-  <p>Send donations to my UPI: <strong>9424494065@fam</strong></p>
-  <button id="closeDonateBtn">Close</button>
-</div>
-
-<div id="signInModal" role="dialog" aria-modal="true" aria-labelledby="signInTitle">
-  <div class="modal-content">
-    <h2 id="signInTitle">Sign In</h2>
-    <input type="text" id="userNameInput" placeholder="Enter your name" />
-    <button id="confirmSignInBtn">Sign In</button>
-  </div>
-</div>
-
-<footer>
-  <small>Made with ❤️ by Ansh Kumar</small>
-</footer>
-
-<script>
-  const foodDataInit = [
-    { name: "Eggs", protein: 6, count: 0, image: "https://img.icons8.com/emoji/96/egg-emoji.png" },
-    { name: "Chicken Breast", protein: 31, count: 0, image: "https://img.icons8.com/fluency/96/chicken.png" },
-    { name: "Paneer", protein: 18, count: 0, image: "https://cdn-icons-png.flaticon.com/128/1046/1046857.png" },
-    { name: "Oats", protein: 5, count: 0, image: "https://img.icons8.com/color/96/oatmeal.png" }
-  ];
-
-  let foodData = [];
-  let userName = null;
-
-  // Elements
+  <section id="foodList" aria-label="Food items list">
+    <!-- Food items get inserted here -->
+ 
