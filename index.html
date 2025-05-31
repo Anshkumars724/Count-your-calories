@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Count Your Calories</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let foodData = [
+      { name: "Egg", protein: 6, count: 0, image: "https://img.icons8.com/color/96/egg.png" },
+      { name: "Chicken Breast", protein: 31, count: 0, image: "https://img.icons8.com/color/96/roast-chicken.png" },
+      { name: "Oats", protein: 11, count: 0, image: "https://img.icons8.com/color/96/oat.png" },
+      { name: "Curd", protein: 3.5, count: 0, image: "https://img.icons8.com/color/96/yogurt.png" },
+      { name: "Paneer", protein: 18, count: 0, image: "https://img.icons8.com/color/96/tofu.png" },
+      { name: "Rice", protein: 2.7, count: 0, image: "https://img.icons8.com/color/96/rice-bowl.png" }
+    ];
+    let totalProtein = 0;
+    const goal = 100;
+
+    function updateUI() {
+      const list = document.getElementById("food-list");
+      const proteinTotal = document.getElementById("protein-total");
+      const bowl = document.getElementById("bowl-icon");
+      list.innerHTML = "";
+      totalProtein = 0;
+      foodData.forEach((item, index) => {
+        totalProtein += item.protein * item.count;
+        const foodItem = document.createElement("div");
+        foodItem.className = "flex items-center justify-between bg-gray-800 p-3 rounded-xl mb-2 shadow";
+        foodItem.innerHTML = `
+          <div class="flex items-center">
+            <img src="${item.image}" class="w-12 h-12 rounded-full mr-4" />
+            <div>
+              <h3 class="text-lg font-semibold">${item.name}</h3>
+              <p class="text-sm text-gray-400">${item.count} x ${item.protein}g protein</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="changeCount(${index}, -1)" class="bg-red-600 px-3 py-1 rounded-full">-</button>
+            <button onclick="changeCount(${index}, 1)" class="bg-green-600 px-3 py-1 rounded-full">+</button>
+          </div>
+        `;
+        list.appendChild(foodItem);
+      });
+      proteinTotal.innerText = `${totalProtein.toFixed(1)}g / ${goal}g protein`;
+      bowl.innerText = totalProtein > 0 ? "🍲" : "🥣";
+    }
+
+    function changeCount(index, value) {
+      foodData[index].count = Math.max(0, foodData[index].count + value);
+      updateUI();
+    }
+
+    window.onload = updateUI;
+  </script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .donate-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.2rem;
+      border-radius: 50px;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.5);
+      cursor: pointer;
+      z-index: 10;
+    }
+    .donate-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+    .donate-modal-content {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      padding: 2rem;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    .donate-modal button.close {
+      margin-top: 1rem;
+      background-color: #ff4d6d;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .copy-btn {
+      background-color: #2d3748;
+      color: white;
+      padding: 0.4rem 0.75rem;
+      border: none;
+      border-radius: 0.375rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-xl w-full mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-2">What did you eat today?</h1>
+    <div id="bowl-icon" class="text-6xl text-center mb-4">🥣</div>
+    <div id="protein-total" class="text-center text-lg mb-6 font-medium"></div>
+    <div id="food-list"></div>
+  </div>
+
+  <!-- Donation Button & Modal -->
+  <button class="donate-btn" onclick="document.getElementById('donateModal').style.display='flex'">❤️</button>
+
+  <div id="donateModal" class="donate-modal" onclick="this.style.display='none'">
+    <div class="donate-modal-content" onclick="event.stopPropagation()">
+      <h2 class="text-xl font-bold mb-4">💖 Enjoying the app?</h2>
+      <p class="mb-2">Support development with a small donation!</p>
+      <p class="mb-2">Scan or copy this UPI ID:</p>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=upi://pay?pa=9424494065@fam&pn=SupportDev&am=50&cu=INR" alt="UPI QR" class="mx-auto my-4 rounded-lg shadow-lg" width="180" />
+      <p class="text-sm">9424494065@fam</p>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('9424494065@fam')">Copy UPI ID</button>
+      <br>
+      <button class="close" onclick="document.getElementById('donateModal').style.display='none'">Close</button>
+    </div>
+  </div>
+</body>
+</html>
